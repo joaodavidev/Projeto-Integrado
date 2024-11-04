@@ -8,7 +8,4 @@
     }catch (PDOException $error){
         echo ("Erro: a conexão com o banco de dados falhou. Error: " . $error -> getMessage());
     }
-
-
-
 ?>
