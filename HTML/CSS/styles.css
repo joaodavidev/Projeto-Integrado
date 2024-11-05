@@ -43,7 +43,7 @@ html, body {
   transition: width 0.3s;
 }
 
-.menuaberto.fechado .logo-img {
+.menuaberto .fechado .logo-img {
   width: 40px;
 }
 
