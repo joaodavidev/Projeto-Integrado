@@ -7,7 +7,14 @@
   box-sizing: border-box;
 }
 
-body {
+body.claro, body.escuro { 
+  transition: background-color 0.3s ease, color 0.3s
+}
+body.escuro {
+  background-color: #12283C;
+  color: #9CA4C0;
+}
+.claro {
     text-align: center;
     margin: 0;
     padding: 0;
@@ -64,6 +71,9 @@ button {
   }
 
   .header  .icones{
+    display: flex;
     color: #555B6D;
     font-size: 24px;
   }
+
+ 
