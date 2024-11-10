@@ -4,7 +4,7 @@ USE learnhub;
 CREATE TABLE cadastro (
     id_cadastro INT PRIMARY KEY auto_increment,
     nome VARCHAR(20),
-    datanasc DATE,
+    data_nasc DATE,
     sexo ENUM('selecione','masculino', 'feminino', 'outro'),
     email VARCHAR(100) UNIQUE,
     senha VARCHAR(32),
@@ -50,4 +50,18 @@ VALUES
 
 INSERT INTO login(email, senha) 
 VALUES ('teste@gmail.com', '123');
+
+--PROCEDURES
+DELIMITER $$
+CREATE PROCEDURE insert_cadastro( IN pc_nome VARCHAR(20),
+    IN pc_data_nasc DATE,
+    IN pc_sexo ENUM('selecione','masculino', 'feminino', 'outro'),
+    IN pc_email VARCHAR(100) UNIQUE,
+    IN pc_senha VARCHAR(32),
+    ) 
+
+BEGIN
+    INSERT INTO cadastro(nome, data_nasc, sexo, email, senha)
+    VALUES (pc_nome, pc_data_nasc, pc_sexo, pc_senha);
+END $$ 
 
