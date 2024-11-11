@@ -51,6 +51,12 @@ VALUES
 INSERT INTO login(email, senha) 
 VALUES ('teste@gmail.com', '123');
 
+--VIEWS
+CREATE VIEW verificar_login 
+AS 
+SELECT email, senha FROM cadastro;
+
+
 --PROCEDURES
 DELIMITER $$
 CREATE PROCEDURE insert_cadastro( IN pc_nome VARCHAR(20),
