@@ -158,7 +158,7 @@ DELIMITER $$
 CREATE PROCEDURE insert_cadastro( IN pc_nome VARCHAR(20),
     IN pc_data_nasc DATE,
     IN pc_sexo ENUM('selecione','masculino', 'feminino', 'outro'),
-    IN pc_email VARCHAR(100) UNIQUE,
+    IN pc_email VARCHAR(100),
     IN pc_senha VARCHAR(32),
     ) 
 
@@ -222,4 +222,14 @@ BEGIN
 END //
 DELIMITER ;
 
+DELIMITER //
+CREATE PROCEDURE adicionar_materia (
+    IN p_nome_materia VARCHAR(100),
+    IN p_id_estudante INT
+)
+BEGIN
+    INSERT INTO materias (nome, id_estudante, id_professor)
+    VALUES (p_nome_materia, p_id_estudante, NULL);
+END //
+DELIMITER ;
 
