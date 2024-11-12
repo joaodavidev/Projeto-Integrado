@@ -39,9 +39,11 @@ CREATE TABLE diploma (
 
 CREATE TABLE estudante (
     id_estudante INT PRIMARY KEY auto_increment,
-    nome, 
-    email,
-    datanasc,
+    id_usuario INT,
+    nome VARCHAR(50), 
+    email VARCHAR(100),
+    datanasc DATE,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
 );
 
 CREATE TABLE professor (
