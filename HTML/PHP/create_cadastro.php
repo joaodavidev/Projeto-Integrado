@@ -11,6 +11,7 @@
 
     $prcd = $conn->prepare("CALL insert_cadastro(?, ?, ?, ?, ?)");
     $prcd->bind_param("ppppp", $nome, $data_nasc, $sexo, $email, $senha);
+    $prcd->execute();
 
 
         if ($prcd->execute() == TRUE) {
