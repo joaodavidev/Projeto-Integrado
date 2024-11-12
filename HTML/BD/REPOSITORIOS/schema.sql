@@ -23,8 +23,6 @@ CREATE TABLE estudante (
     nome, 
     email,
     datanasc,
-
-
 );
 
 CREATE TABLE professor (
