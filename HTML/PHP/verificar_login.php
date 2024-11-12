@@ -1,6 +1,7 @@
 <?php
     include('conexao.php');
 
+    session_start();
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = $_POST['email'];
         $senha = $_POST['senha'];
@@ -15,7 +16,9 @@
             $view->fetch();
             
             if (password_verify($senha, $hash)) {
-                //Sucesso
+                $_SESSION['loggedin'] = true; 
+                $_SESSION['email'] = $email;
+                header("Location: index.php");
             } else {
                 //senha incorreta
             } 

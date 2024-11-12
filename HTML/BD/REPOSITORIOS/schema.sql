@@ -10,13 +10,6 @@ CREATE TABLE cadastro (
     senha VARCHAR(32),
 );
 
-CREATE TABLE login (
-    email VARCHAR(100) UNIQUE PRIMARY KEY,
-    senha VARCHAR(32),
-    FOREIGN KEY (email) REFERENCES cadastro(email),
-    FOREIGN KEY (senha) REFERENCES cadastro(senha)
-);
-
 CREATE TABLE usuario (
     id_usuario INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100),
@@ -77,14 +70,6 @@ CREATE TABLE checkin_metas (
     data DATE,
     atividades TEXT,
     FOREIGN KEY (id_estudante) REFERENCES estudante(id_estudante)
-);
-
-CREATE TABLE login (
-    id_login INT PRIMARY KEY AUTO_INCREMENT,
-    email VARCHAR(100),
-    senha VARCHAR(50),
-    tipo_usuario ENUM('estudante', 'professor', 'administrador'),
-    usuario_id INT
 );
 
 
@@ -149,13 +134,7 @@ CREATE TABLE rel_estudante_professor (
 
 --Coisas de SELECT 
 
-INSERT INTO cadastro (email, senha, usuario, datanasc)
-VALUES
-('teste@gmail.com', '123', 'teste','17-10-2006');
 
-
-INSERT INTO login(email, senha) 
-VALUES ('teste@gmail.com', '123');
 
 --VIEWS
 CREATE VIEW verificar_login 
@@ -170,9 +149,9 @@ SELECT
     a.exercicios,
     a.data
 FROM 
-    atividades a
+    atividades AS a
 JOIN 
-    estudante e ON a.id_estudante = e.id_estudante;
+    estudante AS e ON a.id_estudante = e.id_estudante;
 
 --PROCEDURES
 DELIMITER $$
