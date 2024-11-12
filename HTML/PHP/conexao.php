@@ -10,9 +10,4 @@
         die("Conexão falhou: " . $conn->connect_error);
     }
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $email = $_POST['email'];
-        $senha = $_POST['senha'];
-        
-    }
 ?>
