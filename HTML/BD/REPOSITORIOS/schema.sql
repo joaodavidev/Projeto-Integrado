@@ -7,7 +7,7 @@ CREATE TABLE cadastro (
     data_nasc DATE,
     sexo ENUM('selecione','masculino', 'feminino', 'outro'),
     email VARCHAR(100) UNIQUE,
-    senha VARCHAR(32),
+    senha VARCHAR(32)
 );
 
 CREATE TABLE usuario (
@@ -130,32 +130,15 @@ CREATE TABLE rel_estudante_professor (
     FOREIGN KEY (id_professor) REFERENCES professor(id_professor)
 );
 
-
-
---Coisas de SELECT 
-
-
-
---VIEWS
 CREATE VIEW verificar_login 
 AS 
 SELECT email, senha FROM cadastro;
 
-CREATE VIEW vw_atividades_estudante AS
-SELECT 
-    a.id_atividades,
-    e.nome AS nome_estudante,
-    a.materia,
-    a.exercicios,
-    a.data
-FROM 
-    atividades AS a
-JOIN 
-    estudante AS e ON a.id_estudante = e.id_estudante;
+/* CRUD CADASTRO */
+CREATE VIEW vw_cadastro AS
+SELECT id_cadastro, nome, data_nasc, sexo, email FROM cadastro;
 
---PROCEDURES
-
-DELIMITER $$
+DELIMITER //
 CREATE PROCEDURE insert_cadastro(
     IN pc_nome VARCHAR(20),
     IN pc_data_nasc DATE,
@@ -171,13 +154,20 @@ BEGIN
 
     START TRANSACTION;
     INSERT INTO cadastro(nome, data_nasc, sexo, email, senha)
-    VALUES (pc_nome, pc_data_nasc, pc_sexo, pc_senha);
+    VALUES (pc_nome, pc_data_nasc, pc_sexo, pc_email, pc_senha);
     COMMIT;
-END$$ 
+END//
 DELIMITER ;
 
 DELIMITER //
-CREATE PROCEDURE registrar_checkin (IN id_estudante INT)
+CREATE PROCEDURE update_cadastro(
+    IN p_id_cadastro INT,
+    IN p_nome VARCHAR(20),
+    IN p_data_nasc DATE,
+    IN p_sexo ENUM('selecione','masculino', 'feminino', 'outro'),
+    IN p_email VARCHAR(100),
+    IN p_senha VARCHAR(32)
+)
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -185,18 +175,96 @@ BEGIN
     END;
 
     START TRANSACTION;
-    IF NOT EXISTS (
-        SELECT 1 
-        FROM checkin 
-        WHERE id_estudante = id_estudante AND DATE(data) = CURDATE()
-    ) THEN
-        INSERT INTO checkin (id_estudante, data, horario)
-        VALUES (id_estudante, CURDATE(), CURTIME());
-    END IF;
+    UPDATE cadastro
+    SET nome = p_nome, data_nasc = p_data_nasc, sexo = p_sexo, email = p_email, senha = p_senha
+    WHERE id_cadastro = p_id_cadastro;
     COMMIT;
 END//
 DELIMITER ;
 
+DELIMITER //
+CREATE PROCEDURE delete_cadastro(IN p_id_cadastro INT)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
+    DELETE FROM cadastro WHERE id_cadastro = p_id_cadastro;
+    COMMIT;
+END//
+DELIMITER ;
+
+/*CRUD USUARIO */
+/*cview*/
+CREATE VIEW vw_usuario AS
+SELECT id_usuario, nome, email, status FROM usuario;
+/*create*/
+DELIMITER //
+CREATE PROCEDURE insert_cadastro(
+    IN pc_nome VARCHAR(20),
+    IN pc_data_nasc DATE,
+    IN pc_sexo ENUM('selecione','masculino', 'feminino', 'outro'),
+    IN pc_email VARCHAR(100),
+    IN pc_senha VARCHAR(32)
+) 
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
+    INSERT INTO cadastro(nome, data_nasc, sexo, email, senha)
+    VALUES (pc_nome, pc_data_nasc, pc_sexo, pc_email, pc_senha);
+    COMMIT;
+END//
+DELIMITER ;
+/*update*/
+DELIMITER //
+CREATE PROCEDURE update_cadastro(
+    IN p_id_cadastro INT,
+    IN p_nome VARCHAR(20),
+    IN p_data_nasc DATE,
+    IN p_sexo ENUM('selecione','masculino', 'feminino', 'outro'),
+    IN p_email VARCHAR(100),
+    IN p_senha VARCHAR(32)
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
+    UPDATE cadastro
+    SET nome = p_nome, data_nasc = p_data_nasc, sexo = p_sexo, email = p_email, senha = p_senha
+    WHERE id_cadastro = p_id_cadastro;
+    COMMIT;
+END//
+DELIMITER ;
+/*delete*/
+DELIMITER //
+CREATE PROCEDURE delete_cadastro(IN p_id_cadastro INT)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
+    DELETE FROM cadastro WHERE id_cadastro = p_id_cadastro;
+    COMMIT;
+END//
+DELIMITER ;
+
+/* CRUD DIPLOMA */
+/*view*/
+CREATE VIEW vw_diploma AS
+SELECT id_diploma, id_usuario, arquivo_diploma, status FROM diploma;
+
+/*create*/
 DELIMITER //
 CREATE PROCEDURE solicitar_aprovacao_professor (IN p_id_usuario INT, IN p_arquivo_diploma VARCHAR(255))
 BEGIN
@@ -215,7 +283,7 @@ BEGIN
     COMMIT;
 END//
 DELIMITER ;
-
+/*update*/
 DELIMITER //
 CREATE PROCEDURE aprovar_professor (IN p_id_usuario INT)
 BEGIN
@@ -255,7 +323,69 @@ BEGIN
     COMMIT;
 END//
 DELIMITER ;
+/*delete*/
+DELIMITER //
+CREATE PROCEDURE delete_diploma(IN p_id_diploma INT)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
 
+    START TRANSACTION;
+    DELETE FROM diploma WHERE id_diploma = p_id_diploma;
+    COMMIT;
+END//
+DELIMITER ;
+
+/* CRUD ESTUDANTE */
+/*view*/
+CREATE VIEW vw_estudante AS
+SELECT id_estudante, nome, email, datanasc FROM estudante;
+
+/*update*/
+DELIMITER //
+CREATE PROCEDURE update_estudante(
+    IN p_id_estudante INT,
+    IN p_nome VARCHAR(50),
+    IN p_email VARCHAR(100),
+    IN p_datanasc DATE
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
+    UPDATE estudante
+    SET nome = p_nome, email = p_email, datanasc = p_datanasc
+    WHERE id_estudante = p_id_estudante;
+    COMMIT;
+END//
+DELIMITER ;
+
+/*delete*/
+DELIMITER //
+CREATE PROCEDURE delete_estudante(IN p_id_estudante INT)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
+    DELETE FROM estudante WHERE id_estudante = p_id_estudante;
+    COMMIT;
+END//
+DELIMITER ;
+
+
+/* CRUD MATERIAS */
+/*view*/
+CREATE VIEW vw_materias AS
+SELECT id_materia, nome, id_estudante, id_professor FROM materias;
+/*create*/
 DELIMITER //
 CREATE PROCEDURE adicionar_materia (
     IN p_nome_materia VARCHAR(100),
@@ -272,6 +402,111 @@ BEGIN
     VALUES (p_nome_materia, p_id_estudante, NULL);
     COMMIT;
 END//
+DELIMITER ;s
+/*update*/
+DELIMITER //
+CREATE PROCEDURE update_materia(
+    IN p_id_materia INT,
+    IN p_nome VARCHAR(100),
+    IN p_id_estudante INT,
+    IN p_id_professor INT
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
+    UPDATE materias
+    SET nome = p_nome, id_estudante = p_id_estudante, id_professor = p_id_professor
+    WHERE id_materia = p_id_materia;
+    COMMIT;
+END//
+DELIMITER ;
+/*delete*/
+DELIMITER //
+CREATE PROCEDURE delete_materia(IN p_id_materia INT)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
+    DELETE FROM materias WHERE id_materia = p_id_materia;
+    COMMIT;
+END//
 DELIMITER ;
 
+/* CRUD ATIVIDADES */
+/*view*/
+CREATE VIEW vw_atividades_estudante AS
+SELECT 
+    a.id_atividades,
+    e.nome AS nome_estudante,
+    a.materia,
+    a.exercicios,
+    a.data
+FROM 
+    atividades AS a
+JOIN 
+    estudante AS e ON a.id_estudante = e.id_estudante;
 
+/*update*/
+DELIMITER //
+CREATE PROCEDURE update_atividade(
+    IN p_id_atividades INT,
+    IN p_materia VARCHAR(100),
+    IN p_exercicios TEXT,
+    IN p_data DATE
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
+    UPDATE atividades
+    SET materia = p_materia, exercicios = p_exercicios, data = p_data
+    WHERE id_atividades = p_id_atividades;
+    COMMIT;
+END//
+DELIMITER ;
+
+/*delete*/
+DELIMITER //
+CREATE PROCEDURE delete_atividade(IN p_id_atividades INT)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
+    DELETE FROM atividades WHERE id_atividades = p_id_atividades;
+    COMMIT;
+END//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE registrar_checkin (IN id_estudante INT)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM checkin 
+        WHERE id_estudante = id_estudante AND DATE(data) = CURDATE()
+    ) THEN
+        INSERT INTO checkin (id_estudante, data, horario)
+        VALUES (id_estudante, CURDATE(), CURTIME());
+    END IF;
+    COMMIT;
+END//
+DELIMITER ;
