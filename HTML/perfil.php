@@ -37,6 +37,7 @@
         </div>
       </header>
 
+<<<<<<< Updated upstream:HTML/perfil.php
       <div class="perfil">
         <form action="PHP/alterar_cadastro.php" method="post">
             <label for="nome">Nome</label>
@@ -70,6 +71,35 @@
             <button type="submit">Salvar</button>
 >>>>>>> a0acc2bcf09d55d4127eaa2c1635c2bb5ae87887:HTML/perfil.php
         </form>
+=======
+      <div class="perfil-container">
+        <div class="perfilaparecendo">
+          <img src="IMG/dia-do-estudante.jpeg" alt="Foto de perfil" class="fotoperfil">
+          <h2>João da Silva</h2>
+          <p class="description">ASDASDJDASNDJASNDJAS</p>
+          <p class="datanasc">Data de nascimento: </p>
+        </div>
+        <div class="perfil">
+          <form action="alterar_cadastro.php" method="post">
+              <label for="nome">Nome</label>
+              <input type="text" id="nome" name="nome" required>
+              
+              <label for="descricao">Descrição</label>
+              <input type="text" id="descricao" name="descricao" required>
+              
+              <label for="data_nasc">Data de nascimento</label>
+              <input type="date" id="data_nasc" name="data_nasc" required>
+              
+              <label for="certificado">É professor? Adicione seu certificado</label>
+              <div class="upload-container">
+                <input type="file" id="certificado" name="certificado">
+                <label for="certificado">Arraste aqui</label>
+              </div>
+
+              <button type="submit">Salvar</button>
+          </form>
+        </div>
+>>>>>>> Stashed changes:HTML/perfil.html
       </div>
     </div>
   </div>
