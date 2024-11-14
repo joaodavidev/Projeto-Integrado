@@ -1,3 +1,5 @@
+<?php include 'autenticacao.php' ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -57,7 +59,7 @@
             <br>
             <br>
 
-            <label for="email"></label>
+            <label for="email">Email</label>
             <input type="email" id="email" name="email" required>
             
             <br>

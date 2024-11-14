@@ -4,6 +4,7 @@
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    session_start();
     $nome = $_POST['nome'];
     $data_nasc = $_POST['data_nasc'];
     $sexo = $_POST['sexo'];
@@ -20,8 +21,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 senha = ? 
             WHERE id_cadastro = ?";
 
-    $stmt = $conn->prepare($prcd);
-    $stmt->bind_param("sssssi", $nome, $data_nasc, $sexo, $email, $senha, $id_cadastro);
+    $prcd = $conn->prepare($prcd);
+    $prcd->bind_param("sssssi", $nome, $data_nasc, $sexo, $email, $senha, $id_cadastro);
 
     if ($stmt->execute()) {
         echo "Cadastro atualizado com sucesso!";
@@ -29,7 +30,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Erro ao atualizar cadastro: " . $stmt->error;
     }
 
-    // Fecha a declaração e conexão
     $stmt->close();
 }
 
