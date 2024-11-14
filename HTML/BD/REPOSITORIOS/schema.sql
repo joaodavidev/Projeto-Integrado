@@ -11,383 +11,459 @@ CREATE TABLE cadastro (
 );
 
 CREATE TABLE diploma (
-    id_diploma INT PRIMARY KEY AUTO_INCREMENT,
+    nome_diploma INT PRIMARY KEY,
     id_cadastro INT,
-    arquivo_diploma VARCHAR(255),
-    status ENUM('Pendente', 'Aprovado', 'Rejeitado') DEFAULT 'Pendente',
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
-);
-
-CREATE TABLE professor (
-    id_professor INT PRIMARY KEY AUTO_INCREMENT,
-    id_cadastro INT,
+    descricao_diploma VARCHAR(255),
+    data_diploma DATE,
     FOREIGN KEY (id_cadastro) REFERENCES cadastro(id_cadastro)
 );
 
-CREATE TABLE administrador (
-    id_administrador INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(100),
-    email VARCHAR(100) UNIQUE,
-    data_nascimento DATE,
-    sexo CHAR(1),
-    telefone VARCHAR(15),
-    cargo VARCHAR(50),
-    endereco VARCHAR(150)
+CREATE TABLE meta_dia (
+    id_meta_dia INT PRIMARY KEY,
+    id_cadastro INT,
+    meta INT,
+    data_meta DATA,
+    FOREIGN KEY (id_cadastro) REFERENCES cadastro(id_cadastro)
 );
-
-CREATE TABLE checkin (
-    id_checkin INT PRIMARY KEY AUTO_INCREMENT,
-    id_estudante INT,
-    data DATE,
-    horario TIME,
-    FOREIGN KEY (id_estudante) REFERENCES estudante(id_estudante)
-);
-
-CREATE TABLE checkin_metas (
-    id_checkin_metas INT PRIMARY KEY AUTO_INCREMENT,
-    id_estudante INT,
-    data DATE,
-    atividades TEXT,
-    FOREIGN KEY (id_estudante) REFERENCES estudante(id_estudante)
-);
-
 
 CREATE TABLE perfil (
     id_perfil INT PRIMARY KEY AUTO_INCREMENT,
-    foto VARCHAR(255),
     nome VARCHAR(100),
     descricao TEXT,
-    diploma VARCHAR(50)
-);
-
-CREATE TABLE materiais (
-    id_materiais INT PRIMARY KEY AUTO_INCREMENT,
-    id_estudante INT,
-    id_professor INT,
-    materia VARCHAR(100),
-    tipo_arquivo VARCHAR(50),
-    conteudo TEXT,
-    FOREIGN KEY (id_estudante) REFERENCES estudante(id_estudante),
-    FOREIGN KEY (id_professor) REFERENCES professor(id_professor)
-);
-
-CREATE TABLE atividades (
-    id_atividades INT PRIMARY KEY AUTO_INCREMENT,
-    id_estudante INT,
-    id_professor INT,
-    materia VARCHAR(100),
-    exercicios TEXT,
-    data DATE,
-    FOREIGN KEY (id_estudante) REFERENCES estudante(id_estudante),
-    FOREIGN KEY (id_professor) REFERENCES professor(id_professor)
+    data_nasc DATE,
 );
 
 CREATE TABLE materias (
     id_materia INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100),
-    id_estudante INT,
-    id_professor INT,
-    FOREIGN KEY (id_estudante) REFERENCES estudante(id_estudante),
-    FOREIGN KEY (id_professor) REFERENCES professor(id_professor)
+    id_cadastro INT,
+    FOREIGN KEY (id_cadastro) REFERENCES cadastro(id_cadastro),
 );
 
-CREATE TABLE suporte (
-    id_suporte INT PRIMARY KEY AUTO_INCREMENT,
-    id_usuario INT,
-    nome VARCHAR(100),
-    responsavel VARCHAR(100),
-    email VARCHAR(100),
-    assunto TEXT
+CREATE TABLE atividades (
+    id_cadastro INT,
+    nome_atividade VARCHAR(50) PRIMARY KEY,
+    num_exercicios INT,
+    nome_materia VARCHAR(50)
+    FOREIGN KEY (id_cadastro) REFERENCES cadastro(id_cadastro)
 );
 
 CREATE VIEW verificar_login 
 AS 
 SELECT email, senha FROM cadastro;
 
-/* CRUD CADASTRO */
-CREATE VIEW vw_cadastro AS
-SELECT id_cadastro, nome, data_nasc, sexo, email FROM cadastro;
 
-DELIMITER //
-CREATE PROCEDURE insert_cadastro(
-    IN pc_nome VARCHAR(20),
-    IN pc_data_nasc DATE,
-    IN pc_sexo ENUM('selecione','masculino', 'feminino', 'outro'),
-    IN pc_email VARCHAR(100),
-    IN pc_senha VARCHAR(32)
-) 
-BEGIN
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-    END;
+-- CRUD para tabela 'cadastro'
 
-    START TRANSACTION;
-    INSERT INTO cadastro(nome, data_nasc, sexo, email, senha)
-    VALUES (pc_nome, pc_data_nasc, pc_sexo, pc_email, pc_senha);
-    COMMIT;
-END//
-DELIMITER ;
-
-DELIMITER //
-CREATE PROCEDURE update_cadastro(
+-- CREATE PROCEDURE para 'cadastro'
+DELIMITER $$
+CREATE PROCEDURE sp_create_cadastro(
     IN p_nome VARCHAR(20),
     IN p_data_nasc DATE,
-    IN p_id_cadastro INT,
+    IN p_sexo ENUM('selecione', 'masculino', 'feminino', 'outro'),
+    IN p_email VARCHAR(100),
+    IN p_senha VARCHAR(32)
 )
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
         ROLLBACK;
+        SELECT 'Erro ao inserir cadastro';
     END;
-
     START TRANSACTION;
-    UPDATE cadastro
-    SET nome = p_nome, data_nasc = p_data_nasc
-    WHERE id_cadastro = p_id_cadastro;
+    INSERT INTO cadastro (nome, data_nasc, sexo, email, senha)
+    VALUES (p_nome, p_data_nasc, p_sexo, p_email, p_senha);
     COMMIT;
-END//
+    SELECT 'Cadastro inserido com sucesso';
+END $$
 DELIMITER ;
 
-DELIMITER //
-CREATE PROCEDURE delete_cadastro(IN p_id_cadastro INT)
+-- UPDATE PROCEDURE para 'cadastro'
+DELIMITER $$
+CREATE PROCEDURE sp_update_cadastro(
+    IN p_id_cadastro INT,
+    IN p_nome VARCHAR(20),
+    IN p_data_nasc DATE,
+    IN p_sexo ENUM('selecione', 'masculino', 'feminino', 'outro'),
+    IN p_email VARCHAR(100),
+    IN p_senha VARCHAR(32)
+)
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
         ROLLBACK;
+        SELECT 'Erro ao atualizar cadastro';
     END;
+    START TRANSACTION;
+    UPDATE cadastro
+    SET nome = p_nome, data_nasc = p_data_nasc, sexo = p_sexo, email = p_email, senha = p_senha
+    WHERE id_cadastro = p_id_cadastro;
+    COMMIT;
+    SELECT 'Cadastro atualizado com sucesso';
+END $$
+DELIMITER ;
 
+-- DELETE PROCEDURE para 'cadastro'
+DELIMITER $$
+CREATE PROCEDURE sp_delete_cadastro(
+    IN p_id_cadastro INT
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SELECT 'Erro ao excluir cadastro';
+    END;
     START TRANSACTION;
     DELETE FROM cadastro WHERE id_cadastro = p_id_cadastro;
     COMMIT;
-END//
+    SELECT 'Cadastro excluído com sucesso';
+END $$
 DELIMITER ;
 
-/* CRUD DIPLOMA */
-/*view*/
-CREATE VIEW vw_diploma AS
-SELECT id_diploma, id_usuario, arquivo_diploma, status FROM diploma;
+-- VIEW para listar todos os cadastros
+CREATE VIEW vw_cadastros AS
+SELECT * FROM cadastro;
 
-/*create*/
-DELIMITER //
-CREATE PROCEDURE solicitar_aprovacao_professor (IN p_id_usuario INT, IN p_arquivo_diploma VARCHAR(255))
-BEGIN
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-    END;
+-- CRUD para tabela 'diploma'
 
-    START TRANSACTION;
-    UPDATE usuario 
-    SET status = 'Aguardando Aprovação' 
-    WHERE id_usuario = p_id_usuario;
-    
-    INSERT INTO diploma (id_usuario, arquivo_diploma, status)
-    VALUES (p_id_usuario, p_arquivo_diploma, 'Pendente');
-    COMMIT;
-END//
-DELIMITER ;
-/*update*/
-DELIMITER //
-CREATE PROCEDURE aprovar_professor (IN p_id_usuario INT)
-BEGIN
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-    END;
-
-    START TRANSACTION;
-    UPDATE usuario 
-    SET status = 'Professor' 
-    WHERE id_usuario = p_id_usuario;
-    
-    UPDATE diploma
-    SET status = 'Aprovado'
-    WHERE id_usuario = p_id_usuario AND status = 'Pendente';
-    COMMIT;
-END//
-DELIMITER ;
-
-DELIMITER //
-CREATE PROCEDURE rejeitar_diploma (IN p_id_usuario INT)
-BEGIN
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-    END;
-
-    START TRANSACTION;
-    UPDATE usuario 
-    SET status = 'Estudante' 
-    WHERE id_usuario = p_id_usuario;
-    
-    UPDATE diploma
-    SET status = 'Rejeitado'
-    WHERE id_usuario = p_id_usuario AND status = 'Pendente';
-    COMMIT;
-END//
-DELIMITER ;
-/*delete*/
-DELIMITER //
-CREATE PROCEDURE delete_diploma(IN p_id_diploma INT)
-BEGIN
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-    END;
-
-    START TRANSACTION;
-    DELETE FROM diploma WHERE id_diploma = p_id_diploma;
-    COMMIT;
-END//
-DELIMITER ;
-
-
-
-
-/* CRUD MATERIAS */
-/*view*/
-CREATE VIEW vw_materias AS
-SELECT id_materia, nome, id_estudante, id_professor FROM materias;
-/*create*/
-DELIMITER //
-CREATE PROCEDURE adicionar_materia (
-    IN p_nome_materia VARCHAR(100),
-    IN p_id_estudante INT
+-- CREATE PROCEDURE para 'diploma'
+DELIMITER $$
+CREATE PROCEDURE sp_create_diploma(
+    IN p_nome_diploma INT,
+    IN p_id_cadastro INT,
+    IN p_descricao_diploma VARCHAR(255),
+    IN p_data_diploma DATE
 )
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
         ROLLBACK;
+        SELECT 'Erro ao inserir diploma';
     END;
-
     START TRANSACTION;
-    INSERT INTO materias (nome, id_estudante, id_professor)
-    VALUES (p_nome_materia, p_id_estudante, NULL);
+    INSERT INTO diploma (nome_diploma, id_cadastro, descircao_diploma, data_diploma)
+    VALUES (p_nome_diploma, p_id_cadastro, p_descricao_diploma, p_data_diploma);
     COMMIT;
-END//
-DELIMITER ;s
-/*update*/
-DELIMITER //
-CREATE PROCEDURE update_materia(
-    IN p_id_materia INT,
+    SELECT 'Diploma inserido com sucesso';
+END $$
+DELIMITER ;
+
+-- UPDATE PROCEDURE para 'diploma'
+DELIMITER $$
+CREATE PROCEDURE sp_update_diploma(
+    IN p_nome_diploma INT,
+    IN p_id_cadastro INT,
+    IN p_descricao_diploma VARCHAR(255),
+    IN p_data_diploma DATE
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SELECT 'Erro ao atualizar diploma';
+    END;
+    START TRANSACTION;
+    UPDATE diploma
+    SET id_cadastro = p_id_cadastro, descircao_diploma = p_descricao_diploma, data_diploma = p_data_diploma
+    WHERE nome_diploma = p_nome_diploma;
+    COMMIT;
+    SELECT 'Diploma atualizado com sucesso';
+END $$
+DELIMITER ;
+
+-- DELETE PROCEDURE para 'diploma'
+DELIMITER $$
+CREATE PROCEDURE sp_delete_diploma(
+    IN p_nome_diploma INT
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SELECT 'Erro ao excluir diploma';
+    END;
+    START TRANSACTION;
+    DELETE FROM diploma WHERE nome_diploma = p_nome_diploma;
+    COMMIT;
+    SELECT 'Diploma excluído com sucesso';
+END $$
+DELIMITER ;
+
+-- VIEW para listar todos os diplomas
+CREATE VIEW vw_diplomas AS
+SELECT * FROM diploma;
+
+-- CRUD para tabela 'meta_dia'
+
+-- CREATE PROCEDURE para 'meta_dia'
+DELIMITER $$
+CREATE PROCEDURE sp_create_meta_dia(
+    IN p_id_meta_dia INT,
+    IN p_id_cadastro INT,
+    IN p_meta INT,
+    IN p_data_meta DATE
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SELECT 'Erro ao inserir meta do dia';
+    END;
+    START TRANSACTION;
+    INSERT INTO meta_dia (id_meta_dia, id_cadastro, meta, data_meta)
+    VALUES (p_id_meta_dia, p_id_cadastro, p_meta, p_data_meta);
+    COMMIT;
+    SELECT 'Meta do dia inserida com sucesso';
+END $$
+DELIMITER ;
+
+-- UPDATE PROCEDURE para 'meta_dia'
+DELIMITER $$
+CREATE PROCEDURE sp_update_meta_dia(
+    IN p_id_meta_dia INT,
+    IN p_id_cadastro INT,
+    IN p_meta INT,
+    IN p_data_meta DATE
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SELECT 'Erro ao atualizar meta do dia';
+    END;
+    START TRANSACTION;
+    UPDATE meta_dia
+    SET id_cadastro = p_id_cadastro, meta = p_meta, data_meta = p_data_meta
+    WHERE id_meta_dia = p_id_meta_dia;
+    COMMIT;
+    SELECT 'Meta do dia atualizada com sucesso';
+END $$
+DELIMITER ;
+
+-- DELETE PROCEDURE para 'meta_dia'
+DELIMITER $$
+CREATE PROCEDURE sp_delete_meta_dia(
+    IN p_id_meta_dia INT
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SELECT 'Erro ao excluir meta do dia';
+    END;
+    START TRANSACTION;
+    DELETE FROM meta_dia WHERE id_meta_dia = p_id_meta_dia;
+    COMMIT;
+    SELECT 'Meta do dia excluída com sucesso';
+END $$
+DELIMITER ;
+
+-- VIEW para listar todas as metas diárias
+CREATE VIEW vw_meta_dia AS
+SELECT * FROM meta_dia;
+
+-- CRUD para tabela 'perfil'
+
+-- CREATE PROCEDURE para 'perfil'
+DELIMITER $$
+CREATE PROCEDURE sp_create_perfil(
     IN p_nome VARCHAR(100),
-    IN p_id_estudante INT,
+    IN p_descricao TEXT,
+    IN p_data_nasc DATE
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SELECT 'Erro ao inserir perfil';
+    END;
+    START TRANSACTION;
+    INSERT INTO perfil (nome, descricao, data_nasc)
+    VALUES (p_nome, p_descricao, p_data_nasc);
+    COMMIT;
+    SELECT 'Perfil inserido com sucesso';
+END $$
+DELIMITER ;
+
+-- UPDATE PROCEDURE para 'perfil'
+DELIMITER $$
+CREATE PROCEDURE sp_update_perfil(
+    IN p_id_perfil INT,
+    IN p_nome VARCHAR(100),
+    IN p_descricao TEXT,
+    IN p_data_nasc DATE
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SELECT 'Erro ao atualizar perfil';
+    END;
+    START TRANSACTION;
+    UPDATE perfil
+    SET nome = p_nome, descricao = p_descricao, data_nasc = p_data_nasc
+    WHERE id_perfil = p_id_perfil;
+    COMMIT;
+    SELECT 'Perfil atualizado com sucesso';
+END $$
+DELIMITER ;
+
+-- DELETE PROCEDURE para 'perfil'
+DELIMITER $$
+CREATE PROCEDURE sp_delete_perfil(
+    IN p_id_perfil INT
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SELECT 'Erro ao excluir perfil';
+    END;
+    START TRANSACTION;
+    DELETE FROM perfil WHERE id_perfil = p_id_perfil;
+    COMMIT;
+    SELECT 'Perfil excluído com sucesso';
+END $$
+DELIMITER ;
+
+-- VIEW para listar todos os perfis
+CREATE VIEW vw_perfis AS
+SELECT * FROM perfil;
+
+-- CRUD para tabela 'materias'
+
+-- CREATE PROCEDURE para 'materias'
+DELIMITER $$
+CREATE PROCEDURE sp_create_materias(
+    IN p_nome VARCHAR(100),
+    IN p_id_cadastro INT,
     IN p_id_professor INT
 )
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
         ROLLBACK;
+        SELECT 'Erro ao inserir matéria';
     END;
-
     START TRANSACTION;
-    UPDATE materias
-    SET nome = p_nome, id_estudante = p_id_estudante, id_professor = p_id_professor
-    WHERE id_materia = p_id_materia;
+    INSERT INTO materias (nome, id_cadastro, id_professor)
+    VALUES (p_nome, p_id_cadastro, p_id_professor);
     COMMIT;
-END//
+    SELECT 'Matéria inserida com sucesso';
+END $$
 DELIMITER ;
-/*delete*/
-DELIMITER //
-CREATE PROCEDURE delete_materia(IN p_id_materia INT)
+
+-- UPDATE PROCEDURE para 'materias'
+DELIMITER $$
+CREATE PROCEDURE sp_update_materias(
+    IN p_id_materia INT,
+    IN p_nome VARCHAR(100),
+    IN p_id_cadastro INT,
+    IN p_id_professor INT
+)
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
         ROLLBACK;
+        SELECT 'Erro ao atualizar matéria';
     END;
+    START TRANSACTION;
+    UPDATE materias
+    SET nome = p_nome, id_cadastro = p_id_cadastro, id_professor = p_id_professor
+    WHERE id_materia = p_id_materia;
+    COMMIT;
+    SELECT 'Matéria atualizada com sucesso';
+END $$
+DELIMITER ;
 
+-- DELETE PROCEDURE para 'materias'
+DELIMITER $$
+CREATE PROCEDURE sp_delete_materias(
+    IN p_id_materia INT
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SELECT 'Erro ao excluir matéria';
+    END;
     START TRANSACTION;
     DELETE FROM materias WHERE id_materia = p_id_materia;
     COMMIT;
-END//
+    SELECT 'Matéria excluída com sucesso';
+END $$
 DELIMITER ;
 
-/* CRUD ATIVIDADES */
-/*view*/
-CREATE VIEW vw_atividades_estudante AS
-SELECT 
-    a.id_atividades,
-    e.nome AS nome_estudante,
-    a.materia,
-    a.exercicios,
-    a.data
-FROM 
-    atividades AS a
-JOIN 
-    estudante AS e ON a.id_estudante = e.id_estudante;
+-- VIEW para listar todas as matérias
+CREATE VIEW vw_materias AS
+SELECT * FROM materias;
 
-/*update*/
-DELIMITER //
-CREATE PROCEDURE update_atividade(
-    IN p_id_atividades INT,
-    IN p_materia VARCHAR(100),
-    IN p_exercicios TEXT,
-    IN p_data DATE
+-- CRUD para tabela 'atividades'
+
+-- CREATE PROCEDURE para 'atividades'
+DELIMITER $$
+CREATE PROCEDURE sp_create_atividades(
+    IN p_id_cadastro INT,
+    IN p_nome_atividade VARCHAR(50),
+    IN p_num_exercicios INT,
+    IN p_nome_materia VARCHAR(50)
 )
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
         ROLLBACK;
+        SELECT 'Erro ao inserir atividade';
     END;
+    START TRANSACTION;
+    INSERT INTO atividades (id_cadastro, nome_atividade, num_exercicios, nome_materia)
+    VALUES (p_id_cadastro, p_nome_atividade, p_num_exercicios, p_nome_materia);
+    COMMIT;
+    SELECT 'Atividade inserida com sucesso';
+END $$
+DELIMITER ;
 
+-- UPDATE PROCEDURE para 'atividades'
+DELIMITER $$
+CREATE PROCEDURE sp_update_atividades(
+    IN p_nome_atividade VARCHAR(50),
+    IN p_id_cadastro INT,
+    IN p_num_exercicios INT,
+    IN p_nome_materia VARCHAR(50)
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SELECT 'Erro ao atualizar atividade';
+    END;
     START TRANSACTION;
     UPDATE atividades
-    SET materia = p_materia, exercicios = p_exercicios, data = p_data
-    WHERE id_atividades = p_id_atividades;
+    SET id_cadastro = p_id_cadastro, num_exercicios = p_num_exercicios, nome_materia = p_nome_materia
+    WHERE nome_atividade = p_nome_atividade;
     COMMIT;
-END//
+    SELECT 'Atividade atualizada com sucesso';
+END $$
 DELIMITER ;
 
-/*delete*/
-DELIMITER //
-CREATE PROCEDURE delete_atividade(IN p_id_atividades INT)
-BEGIN
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-    END;
-
-    START TRANSACTION;
-    DELETE FROM atividades WHERE id_atividades = p_id_atividades;
-    COMMIT;
-END//
-DELIMITER ;
-
-DELIMITER //
-CREATE PROCEDURE registrar_checkin (IN id_estudante INT)
-BEGIN
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-    END;
-
-    START TRANSACTION;
-    IF NOT EXISTS (
-        SELECT 1 
-        FROM checkin 
-        WHERE id_estudante = id_estudante AND DATE(data) = CURDATE()
-    ) THEN
-        INSERT INTO checkin (id_estudante, data, horario)
-        VALUES (id_estudante, CURDATE(), CURTIME());
-    END IF;
-    COMMIT;
-END//
-DELIMITER ;
-
-DELIMITER //
-
-CREATE PROCEDURE update_cadastro(
-    IN p_nome VARCHAR(20),
-    IN p_data_nasc DATE,
-    IN p_id_cadastro INT,
+-- DELETE PROCEDURE para 'atividades'
+DELIMITER $$
+CREATE PROCEDURE sp_delete_atividades(
+    IN p_nome_atividade VARCHAR(50)
 )
 BEGIN
-    UPDATE cadastro
-    SET 
-        nome = p_nome,
-        data_nasc = p_data_nasc,
-    WHERE id_cadastro = p_id_cadastro;
-END //
-
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SELECT 'Erro ao excluir atividade';
+    END;
+    START TRANSACTION;
+    DELETE FROM atividades WHERE nome_atividade = p_nome_atividade;
+    COMMIT;
+    SELECT 'Atividade excluída com sucesso';
+END $$
 DELIMITER ;
+
+-- VIEW para listar todas as atividades
+CREATE VIEW vw_atividades AS
+SELECT * FROM atividades;
