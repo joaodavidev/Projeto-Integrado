@@ -10,39 +10,18 @@ CREATE TABLE cadastro (
     senha VARCHAR(32)
 );
 
-CREATE TABLE usuario (
-    id_usuario INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(100),
-    email VARCHAR(100) UNIQUE,
-    senha VARCHAR(50),
-    data_nascimento DATE,
-    sexo CHAR(1),
-    telefone VARCHAR(15),
-    status ENUM('Estudante', 'Aguardando Aprovação', 'Professor') DEFAULT 'Estudante'
-);
-
 CREATE TABLE diploma (
     id_diploma INT PRIMARY KEY AUTO_INCREMENT,
-    id_usuario INT,
+    id_cadastro INT,
     arquivo_diploma VARCHAR(255),
     status ENUM('Pendente', 'Aprovado', 'Rejeitado') DEFAULT 'Pendente',
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
 );
 
-
-CREATE TABLE estudante (
-    id_estudante INT PRIMARY KEY auto_increment,
-    id_usuario INT,
-    nome VARCHAR(50), 
-    email VARCHAR(100),
-    datanasc DATE,
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
-);
-
 CREATE TABLE professor (
     id_professor INT PRIMARY KEY AUTO_INCREMENT,
-    id_usuario INT,
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+    id_cadastro INT,
+    FOREIGN KEY (id_cadastro) REFERENCES cadastro(id_cadastro)
 );
 
 CREATE TABLE administrador (
@@ -121,15 +100,6 @@ CREATE TABLE suporte (
     assunto TEXT
 );
 
-
-CREATE TABLE rel_estudante_professor (
-    id_estudante INT,
-    id_professor INT,
-    PRIMARY KEY (id_estudante, id_professor),
-    FOREIGN KEY (id_estudante) REFERENCES estudante(id_estudante),
-    FOREIGN KEY (id_professor) REFERENCES professor(id_professor)
-);
-
 CREATE VIEW verificar_login 
 AS 
 SELECT email, senha FROM cadastro;
@@ -161,12 +131,9 @@ DELIMITER ;
 
 DELIMITER //
 CREATE PROCEDURE update_cadastro(
-    IN p_id_cadastro INT,
     IN p_nome VARCHAR(20),
     IN p_data_nasc DATE,
-    IN p_sexo ENUM('selecione','masculino', 'feminino', 'outro'),
-    IN p_email VARCHAR(100),
-    IN p_senha VARCHAR(32)
+    IN p_id_cadastro INT,
 )
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -176,75 +143,12 @@ BEGIN
 
     START TRANSACTION;
     UPDATE cadastro
-    SET nome = p_nome, data_nasc = p_data_nasc, sexo = p_sexo, email = p_email, senha = p_senha
+    SET nome = p_nome, data_nasc = p_data_nasc
     WHERE id_cadastro = p_id_cadastro;
     COMMIT;
 END//
 DELIMITER ;
 
-DELIMITER //
-CREATE PROCEDURE delete_cadastro(IN p_id_cadastro INT)
-BEGIN
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-    END;
-
-    START TRANSACTION;
-    DELETE FROM cadastro WHERE id_cadastro = p_id_cadastro;
-    COMMIT;
-END//
-DELIMITER ;
-
-/*CRUD USUARIO */
-/*cview*/
-CREATE VIEW vw_usuario AS
-SELECT id_usuario, nome, email, status FROM usuario;
-/*create*/
-DELIMITER //
-CREATE PROCEDURE insert_cadastro(
-    IN pc_nome VARCHAR(20),
-    IN pc_data_nasc DATE,
-    IN pc_sexo ENUM('selecione','masculino', 'feminino', 'outro'),
-    IN pc_email VARCHAR(100),
-    IN pc_senha VARCHAR(32)
-) 
-BEGIN
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-    END;
-
-    START TRANSACTION;
-    INSERT INTO cadastro(nome, data_nasc, sexo, email, senha)
-    VALUES (pc_nome, pc_data_nasc, pc_sexo, pc_email, pc_senha);
-    COMMIT;
-END//
-DELIMITER ;
-/*update*/
-DELIMITER //
-CREATE PROCEDURE update_cadastro(
-    IN p_id_cadastro INT,
-    IN p_nome VARCHAR(20),
-    IN p_data_nasc DATE,
-    IN p_sexo ENUM('selecione','masculino', 'feminino', 'outro'),
-    IN p_email VARCHAR(100),
-    IN p_senha VARCHAR(32)
-)
-BEGIN
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-    END;
-
-    START TRANSACTION;
-    UPDATE cadastro
-    SET nome = p_nome, data_nasc = p_data_nasc, sexo = p_sexo, email = p_email, senha = p_senha
-    WHERE id_cadastro = p_id_cadastro;
-    COMMIT;
-END//
-DELIMITER ;
-/*delete*/
 DELIMITER //
 CREATE PROCEDURE delete_cadastro(IN p_id_cadastro INT)
 BEGIN
@@ -338,47 +242,7 @@ BEGIN
 END//
 DELIMITER ;
 
-/* CRUD ESTUDANTE */
-/*view*/
-CREATE VIEW vw_estudante AS
-SELECT id_estudante, nome, email, datanasc FROM estudante;
 
-/*update*/
-DELIMITER //
-CREATE PROCEDURE update_estudante(
-    IN p_id_estudante INT,
-    IN p_nome VARCHAR(50),
-    IN p_email VARCHAR(100),
-    IN p_datanasc DATE
-)
-BEGIN
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-    END;
-
-    START TRANSACTION;
-    UPDATE estudante
-    SET nome = p_nome, email = p_email, datanasc = p_datanasc
-    WHERE id_estudante = p_id_estudante;
-    COMMIT;
-END//
-DELIMITER ;
-
-/*delete*/
-DELIMITER //
-CREATE PROCEDURE delete_estudante(IN p_id_estudante INT)
-BEGIN
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-    END;
-
-    START TRANSACTION;
-    DELETE FROM estudante WHERE id_estudante = p_id_estudante;
-    COMMIT;
-END//
-DELIMITER ;
 
 
 /* CRUD MATERIAS */
@@ -509,4 +373,21 @@ BEGIN
     END IF;
     COMMIT;
 END//
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE update_cadastro(
+    IN p_nome VARCHAR(20),
+    IN p_data_nasc DATE,
+    IN p_id_cadastro INT,
+)
+BEGIN
+    UPDATE cadastro
+    SET 
+        nome = p_nome,
+        data_nasc = p_data_nasc,
+    WHERE id_cadastro = p_id_cadastro;
+END //
+
 DELIMITER ;
