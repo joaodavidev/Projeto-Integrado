@@ -1,0 +1,226 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Instrument Sans", Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+body.claro, body.escuro { 
+  transition: background-color 0.3s ease, color 0.3s;
+}
+
+body.escuro {
+  background-color: #12283C;
+  color: #9CA4C0;
+}
+
+body.escuro .barra {
+  background-color: #354D62;
+  border: none;
+}
+
+.claro {
+  background-color: #f0f0f0;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.menuaberto {
+  width: 200px;
+  background-color: #061727;
+  color: #61687E;
+  padding: 20px;
+  transition: width 0.5s;
+}
+
+.menuaberto.fechado {
+  width: 60px;
+}
+
+.menuaberto .logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.logo-img {
+  width: 100px;
+  transition: width 0.3s;
+}
+
+.menuaberto.fechado .logo-img {
+  width: 40px;
+}
+
+.menuaberto .menu {
+  list-style: none;
+}
+
+.menuaberto .menu li {
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+  cursor: pointer;
+}
+
+.menuaberto .menu .icone {
+  font-size: 28px;
+}
+
+.menuaberto.fechado .menu .text {
+  display: none;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.header .botaomenu {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #555B6D;
+}
+
+.header .barra {
+  background-color: #ffffff;
+  width: 70%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.header .icones {
+  display: flex;
+  gap: 15px;
+  font-size: 24px;
+  color: #555B6D;
+}
+
+.icone {
+  cursor: pointer;
+}
+
+.perfil-container {
+  display: flex;
+  gap: 20px;
+}
+
+.profile-display {
+  background-color: #0d1117;
+  border-radius: 10px;
+  color: #c9d1d9;
+  padding: 20px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.profile-display .profile-pic {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
+
+.profile-display h2 {
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.profile-display .description {
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #9CA4C0;
+}
+
+.profile-display .birth-date {
+  font-weight: bold;
+}
+
+.perfil {
+  background-color: #061727;
+  border-radius: 10px;
+  padding: 30px;
+  color: #9CA4C0;
+  flex: 1;
+}
+
+.perfil form {
+  display: flex;
+  flex-direction: column;
+}
+
+.perfil label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #9CA4C0;
+}
+
+.perfil input[type="text"],
+.perfil input[type="date"],
+.perfil input[type="email"],
+.perfil input[type="password"],
+.perfil select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #354D62;
+  background-color: #12283C;
+  color: #9CA4C0;
+}
+
+.upload-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #12283C;
+  border-radius: 5px;
+  padding: 10px;
+  color: #9CA4C0;
+  cursor: pointer;
+}
+
+.perfil button {
+  padding: 10px;
+  background-color: #555B6D;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+}
+
+.perfil button:hover {
+  background-color: #354D62;
+}
