@@ -1,8 +1,8 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = "";
-$dbname = "seu_banco_de_dados";
+$password = "123";
+$dbname = "learnhub";
 
 // Cria conexão
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -18,9 +18,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $descricao_diploma = $_POST['descricao_diploma'];
     $data_diploma = $_POST['data_diploma'];
 
+    // Certifique-se de que o procedimento e os parâmetros estão corretos
     $sql = "CALL sp_create_diploma(?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iiss", $nome_diploma, $id_cadastro, $descricao_diploma, $data_diploma);
+    $stmt->bind_param("siss", $nome_diploma, $id_cadastro, $descricao_diploma, $data_diploma);
 
     if ($stmt->execute()) {
         echo "Diploma inserido com sucesso!";

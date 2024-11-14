@@ -1,9 +1,8 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = "";
-$dbname = "seu_banco_de_dados";
-
+$password = "123";
+$dbname = "learnhub";
 // Cria conexão
 $conn = new mysqli($servername, $username, $password, $dbname);
 

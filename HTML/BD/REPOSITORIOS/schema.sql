@@ -11,7 +11,7 @@ CREATE TABLE cadastro (
 );
 
 CREATE TABLE diploma (
-    nome_diploma INT PRIMARY KEY,
+    nome_diploma VARCHAR(50) PRIMARY KEY,
     id_cadastro INT,
     descricao_diploma VARCHAR(255),
     data_diploma DATE,
@@ -22,7 +22,7 @@ CREATE TABLE meta_dia (
     id_meta_dia INT PRIMARY KEY,
     id_cadastro INT,
     meta INT,
-    data_meta DATA,
+    data_meta DATE,
     FOREIGN KEY (id_cadastro) REFERENCES cadastro(id_cadastro)
 );
 
@@ -30,21 +30,21 @@ CREATE TABLE perfil (
     id_perfil INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100),
     descricao TEXT,
-    data_nasc DATE,
+    data_nasc DATE
 );
 
 CREATE TABLE materias (
     id_materia INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100),
     id_cadastro INT,
-    FOREIGN KEY (id_cadastro) REFERENCES cadastro(id_cadastro),
+    FOREIGN KEY (id_cadastro) REFERENCES cadastro(id_cadastro)
 );
 
 CREATE TABLE atividades (
     id_cadastro INT,
     nome_atividade VARCHAR(50) PRIMARY KEY,
     num_exercicios INT,
-    nome_materia VARCHAR(50)
+    nome_materia VARCHAR(50),
     FOREIGN KEY (id_cadastro) REFERENCES cadastro(id_cadastro)
 );
 
@@ -77,7 +77,6 @@ BEGIN
     SELECT 'Cadastro inserido com sucesso';
 END $$
 DELIMITER ;
-
 -- UPDATE PROCEDURE para 'cadastro'
 DELIMITER $$
 CREATE PROCEDURE sp_update_cadastro(
@@ -124,13 +123,12 @@ DELIMITER ;
 -- VIEW para listar todos os cadastros
 CREATE VIEW vw_cadastros AS
 SELECT * FROM cadastro;
-
 -- CRUD para tabela 'diploma'
 
 -- CREATE PROCEDURE para 'diploma'
 DELIMITER $$
 CREATE PROCEDURE sp_create_diploma(
-    IN p_nome_diploma INT,
+    IN p_nome_diploma VARCHAR(50),
     IN p_id_cadastro INT,
     IN p_descricao_diploma VARCHAR(255),
     IN p_data_diploma DATE
@@ -142,7 +140,7 @@ BEGIN
         SELECT 'Erro ao inserir diploma';
     END;
     START TRANSACTION;
-    INSERT INTO diploma (nome_diploma, id_cadastro, descircao_diploma, data_diploma)
+    INSERT INTO diploma (nome_diploma, id_cadastro, descricao_diploma, data_diploma)
     VALUES (p_nome_diploma, p_id_cadastro, p_descricao_diploma, p_data_diploma);
     COMMIT;
     SELECT 'Diploma inserido com sucesso';
@@ -152,7 +150,7 @@ DELIMITER ;
 -- UPDATE PROCEDURE para 'diploma'
 DELIMITER $$
 CREATE PROCEDURE sp_update_diploma(
-    IN p_nome_diploma INT,
+    IN p_nome_diploma VARCHAR(50),
     IN p_id_cadastro INT,
     IN p_descricao_diploma VARCHAR(255),
     IN p_data_diploma DATE
@@ -175,7 +173,7 @@ DELIMITER ;
 -- DELETE PROCEDURE para 'diploma'
 DELIMITER $$
 CREATE PROCEDURE sp_delete_diploma(
-    IN p_nome_diploma INT
+    IN p_nome_diploma VARCHAR(50)
 )
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -193,7 +191,6 @@ DELIMITER ;
 -- VIEW para listar todos os diplomas
 CREATE VIEW vw_diplomas AS
 SELECT * FROM diploma;
-
 -- CRUD para tabela 'meta_dia'
 
 -- CREATE PROCEDURE para 'meta_dia'
@@ -337,8 +334,7 @@ SELECT * FROM perfil;
 DELIMITER $$
 CREATE PROCEDURE sp_create_materias(
     IN p_nome VARCHAR(100),
-    IN p_id_cadastro INT,
-    IN p_id_professor INT
+    IN p_id_cadastro INT
 )
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -347,8 +343,8 @@ BEGIN
         SELECT 'Erro ao inserir matéria';
     END;
     START TRANSACTION;
-    INSERT INTO materias (nome, id_cadastro, id_professor)
-    VALUES (p_nome, p_id_cadastro, p_id_professor);
+    INSERT INTO materias (nome, id_cadastro)
+    VALUES (p_nome, p_id_cadastro);
     COMMIT;
     SELECT 'Matéria inserida com sucesso';
 END $$
@@ -359,8 +355,7 @@ DELIMITER $$
 CREATE PROCEDURE sp_update_materias(
     IN p_id_materia INT,
     IN p_nome VARCHAR(100),
-    IN p_id_cadastro INT,
-    IN p_id_professor INT
+    IN p_id_cadastro INT
 )
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -370,7 +365,7 @@ BEGIN
     END;
     START TRANSACTION;
     UPDATE materias
-    SET nome = p_nome, id_cadastro = p_id_cadastro, id_professor = p_id_professor
+    SET nome = p_nome, id_cadastro = p_id_cadastro
     WHERE id_materia = p_id_materia;
     COMMIT;
     SELECT 'Matéria atualizada com sucesso';
@@ -466,4 +461,4 @@ DELIMITER ;
 
 -- VIEW para listar todas as atividades
 CREATE VIEW vw_atividades AS
-SELECT * FROM atividades;
+SELECT * FROM atividades;	

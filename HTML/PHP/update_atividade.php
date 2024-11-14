@@ -1,8 +1,8 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = "";
-$dbname = "seu_banco_de_dados";
+$password = "123";
+$dbname = "learnhub";
 
 // Cria conexão
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $sql = "CALL sp_update_atividades(?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("siii", $nome_atividade, $id_cadastro, $num_exercicios, $nome_materia);
+    $stmt->bind_param("siis", $nome_atividade, $id_cadastro, $num_exercicios, $nome_materia);
 
     if ($stmt->execute()) {
         echo "Atividade atualizada com sucesso!";

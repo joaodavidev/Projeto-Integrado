@@ -1,8 +1,8 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = "";
-$dbname = "seu_banco_de_dados";
+$password = "123";
+$dbname = "learnhub";
 
 // Cria conexão
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -17,7 +17,7 @@ $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        echo "ID Matéria: " . $row["id_materia"] . " - Nome: " . $row["nome"] . " - ID Cadastro: " . $row["id_cadastro"] . " - ID Professor: " . $row["id_professor"] . "<br>";
+        echo "ID Matéria: " . $row["id_materia"] . " - Nome: " . $row["nome"] . " - ID Cadastro: " . $row["id_cadastro"] ."<br>";
     }
 } else {
     echo "Nenhuma matéria encontrada.";

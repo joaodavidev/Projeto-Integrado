@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $sql = "CALL sp_create_atividades(?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("isii", $id_cadastro, $nome_atividade, $num_exercicios, $nome_materia);
+    $stmt->bind_param("isis", $id_cadastro, $nome_atividade, $num_exercicios, $nome_materia);
 
     if ($stmt->execute()) {
         echo "Atividade inserida com sucesso!";
