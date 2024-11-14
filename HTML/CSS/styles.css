@@ -123,9 +123,80 @@
       cursor: pointer;
     }
     
-    .eventos { 
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+  }
+  
+  .card {
+      background-color: white;
       padding: 20px;
-      border-radius: 5px;
-      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
       text-align: center;
-    }
+  }
+
+  .dashboard a {
+    text-decoration: none;
+    color: #000;  
+  }
+  
+  .blue { background-color: #4C8BF5; }
+  .yellow { background-color: #F5C24C; }
+  .red { background-color: #F54C4C; }
+  .green { background-color: #4CF56F; }
+  .gray { background-color: #7E7E7E; }
+
+  .study-schedule {
+    margin-top: 30px;
+}
+.cruds {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
+
+.cruds form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cruds label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.cruds input[type="text"],
+.cruds input[type="date"],
+.cruds input[type="number"],
+.cruds textarea,
+.cruds button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.cruds button {
+  background-color: #061727;
+  color: #ffffff;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cruds button:hover {
+  background-color: #0e263d;
+}

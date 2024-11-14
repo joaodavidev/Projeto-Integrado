@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnHub</title>
+  <link rel="stylesheet" href="CSS/styles.css">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+
+<body class="claro">
+
+  <div class="container">
+    <nav class="menuaberto" id="menuaberto">
+        <div class="logo">
+            <a href="index.html">
+          <img src="IMG/logo.png" alt="Logo do LearnHub" class="logo-img">
+        </a>
+        </div>
+        <ul class="menu">
+          <li><span class="icone"><i class='bx bx-home'></i></span><span class="text">Página Inicial</span></li>
+          <li><span class="icone"><i class='bx bx-timer' ></i></span><span class="text">Estudo Diário</span></li>
+          <li><span class="icone"><i class='bx bx-calendar' ></i></span><span class="text">Calendário</span></li>
+          <li><span class="icone"><i class='bx bxs-notepad' ></i></span><span class="text">Caderno</span></li>
+          <li><span class="icone"><i class='bx bxs-graduation' ></i></span><span class="text">Professores</span></li>
+        </ul>
+      </nav>
+    
+    <div class="main-content">
+        <header class="header">
+        <button class="botaomenu" onclick="fecharmenu()"><i class='bx bx-menu' ></i></button>
+        <input type="text" class="barra" placeholder="Buscar assunto...">
+        <div class="icones">
+          <span class="icone"><i class='bx bx-plus-circle' ></i></span>
+          <span class="icone" onclick="modoescuro()"><i class='bx bx-sun'></i></span>
+          <span class="icone"><i class='bx bx-user' ></i></span>
+        </div>
+      </header>
+      <div class="cruds">
+      <form action="PHP/create_meta_dia.php" method="post">
+        <label for="id_meta_dia">ID da Meta do Dia:</label>
+        <input type="number" id="id_meta_dia" name="id_meta_dia" required><br><br>
+    
+        <label for="id_cadastro">ID do Cadastro:</label>
+        <input type="number" id="id_cadastro" name="id_cadastro" required><br><br>
+    
+        <label for="meta">Meta:</label>
+        <input type="number" id="meta" name="meta" required><br><br>
+    
+        <label for="data_meta">Data da Meta:</label>
+        <input type="date" id="data_meta" name="data_meta" required><br><br>
+    
+        <button type="submit">Cadastrar Meta do Dia</button>
+    </form>
+    <form action="PHP/update_meta_dia.php" method="post">
+        <label for="id_meta_dia">ID da Meta do Dia:</label>
+        <input type="number" id="id_meta_dia" name="id_meta_dia" required><br><br>
+    
+        <label for="id_cadastro">ID do Cadastro:</label>
+        <input type="number" id="id_cadastro" name="id_cadastro" required><br><br>
+    
+        <label for="meta">Meta:</label>
+        <input type="number" id="meta" name="meta" required><br><br>
+    
+        <label for="data_meta">Data da Meta:</label>
+        <input type="date" id="data_meta" name="data_meta" required><br><br>
+    
+        <button type="submit">Atualizar Meta do Dia</button>
+    </form>
+    <form action="delete_meta_dia.php" method="post">
+        <label for="id_meta_dia">ID da Meta do Dia:</label>
+        <input type="number" id="id_meta_dia" name="id_meta_dia" required><br><br>
+    
+        <button type="submit">Excluir Meta do Dia</button>
+    </form>
+    <form action="PHP/view_meta_dia.php" method="post">
+        <label for="view_meta">Visualizar Metas</label>
+        <button type="submit">View</button>
+    </form>
+        </div>
+    </div>
+</div>
+
+  <script src="JS/script.js"></script>
+</body>
+</html>
