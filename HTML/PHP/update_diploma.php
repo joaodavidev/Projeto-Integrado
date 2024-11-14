@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $sql = "CALL sp_update_diploma(?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iiss", $nome_diploma, $id_cadastro, $descricao_diploma, $data_diploma);
+    $stmt->bind_param("siss", $nome_diploma, $id_cadastro, $descricao_diploma, $data_diploma);
 
     if ($stmt->execute()) {
         echo "Diploma atualizado com sucesso!";

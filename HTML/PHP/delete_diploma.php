@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $sql = "CALL sp_delete_diploma(?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $nome_diploma);
+    $stmt->bind_param("s", $nome_diploma);
 
     if ($stmt->execute()) {
         echo "Diploma excluído com sucesso!";
