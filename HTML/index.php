@@ -1,4 +1,4 @@
-<?php include 'autenticacao.php' ?>
+<?php include 'PHP/autenticacao.php' ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">

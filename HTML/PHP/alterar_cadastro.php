@@ -1,44 +1,37 @@
 <?php
-    include('conexao.php');  
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "seu_banco_de_dados";
 
+// Cria conexão
+$conn = new mysqli($servername, $username, $password, $dbname);
 
+// Verifica conexão
+if ($conn->connect_error) {
+    die("Falha na conexão: " . $conn->connect_error);
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    session_start();
+    $id_cadastro = $_POST['id_cadastro'];
     $nome = $_POST['nome'];
     $data_nasc = $_POST['data_nasc'];
-<<<<<<< HEAD
-    
+    $sexo = $_POST['sexo'];
+    $email = $_POST['email'];
+    $senha = $_POST['senha'];
 
-
-   
-    $prcd = "UPDATE cadastro SET 
-                nome = ?, 
-                data_nasc = ?,  
-            WHERE id_cadastro = ?";
-
-    $stmt = $conn->prepare($prcd);
-    $stmt->bind_param("sssssi", $nome, $data_nasc, $desc, $id_cadastro);
+    $sql = "CALL sp_update_cadastro(?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("isssss", $id_cadastro, $nome, $data_nasc, $sexo, $email, $senha);
 
     if ($stmt->execute()) {
-=======
-
-
-    $prcd = $conn->prepare("CALL update_cadastro(?, ?)");
-    $prcd->bind_param("ssi", $nome, $data_nasc, $id_cadastro);
-
-    if ($prcd->execute()) {
->>>>>>> a0acc2bcf09d55d4127eaa2c1635c2bb5ae87887
         echo "Cadastro atualizado com sucesso!";
     } else {
-        echo "Erro ao atualizar cadastro: " . $prcd->error;
+        echo "Erro ao atualizar cadastro: " . $stmt->error;
     }
 
-    $prcd->close();
+    $stmt->close();
 }
 
 $conn->close();
-
-
-
 ?>

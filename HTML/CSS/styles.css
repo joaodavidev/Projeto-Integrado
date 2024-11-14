@@ -1,0 +1,42 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  
+  .header .botaomenu {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  .header .barra {
+    width: 70%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+  }
+  
+  .header .icones {
+    display: flex;
+    gap: 15px;
+    font-size: 24px;
+    color: #555B6D;
+  }
+  
+  .icone {
+    cursor: pointer;
+  }
+  
+  .eventos {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
