@@ -1,10 +1,12 @@
+<?php include 'autenticacao.php' ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LearnHub</title>
-  <link rel="stylesheet" href="CSS/styles.css">
+  <link rel="stylesheet" href="CSS/perfil.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
@@ -36,28 +38,28 @@
       </header>
 
       <div class="perfil">
-        <form action="alterar_cadastro.php" method="post">
+        <form action="PHP/alterar_cadastro.php" method="post">
             <label for="nome">Nome</label>
-            <input type="text" id="nome" name="nome" required>
+            <input type="text" id="nome" name="nome" placeholder="Digite aqui:" required>
             
             <br>
 
             <label for="data_nasc">Data de nascimento</label>
-            <input type="date" id="data_nasc" name="data_nasc" required>
-            
+            <input type="date" id="data_nasc" name="data_nasc" placeholder="Digite aqui:" required>
+        
             <br>
 
-            <label for="sexo">Sexo</label>
-            <select id="sexo" name="sexo">
-                <option value="salecione">Selecione</option>
-                <option value="masculino">Masculino</option>
-                <option value="feminino">Feminino</option>
-                <option value="outro">Outro</option>
 
+            <label for="certificado">É professor? Adicione seu certificado</label>
             <br>
+            <input type="text" id="doc" name="doc" placeholder="Digite aqui:"> <button type="button" onclick="salvar_dado()">Insira</button>
+            <button type="button">Deletar</button>
             <br>
+<<<<<<< HEAD:HTML/perfil.html
+            <button type="button" onclick="salvar_dados()">Salvar</button>
+=======
 
-            <label for="email"></label>
+            <label for="email">Email</label>
             <input type="email" id="email" name="email" required>
             
             <br>
@@ -66,11 +68,12 @@
             <input type="password" id="senha" name="senha" required>
 
             <button type="submit">Salvar</button>
+>>>>>>> a0acc2bcf09d55d4127eaa2c1635c2bb5ae87887:HTML/perfil.php
         </form>
       </div>
     </div>
   </div>
 
-  <script src="JS/script.js"></script>
+  <script src="JS/perfil.js"></script>
 </body>
 </html>

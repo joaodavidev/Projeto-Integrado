@@ -6,8 +6,8 @@
         $email = $_POST['email'];
         $senha = $_POST['senha'];
 
-        $view = $conn->prepare("SELECT senha FROM verificar_login WHERE email = ?");
-        $view->bind_param("s", $email);
+        $view = $conn->prepare("SELECT senha, id_cadastro FROM verificar_login WHERE email = ?");
+        $view->bind_param("s", $id_cadastro, $email);
         $view->execute();
         $view->store_result();
 
@@ -17,7 +17,7 @@
             
             if (password_verify($senha, $hash)) {
                 $_SESSION['loggedin'] = true; 
-                $_SESSION['email'] = $email;
+                $_SESSION['id_cadastro'] = $id_cadastro;
                 header("Location: index.php");
             } else {
                 //senha incorreta
